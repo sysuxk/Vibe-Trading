@@ -4,6 +4,7 @@ import { getChartTheme } from "@/lib/chart-theme";
 import { abbreviateNum } from "@/lib/formatters";
 import { echarts, CHART_GROUP, connectCharts } from "@/lib/echarts";
 import { useDarkMode } from "@/hooks/useDarkMode";
+import { useI18n } from "@/lib/i18n";
 
 interface Props {
   data: EquityPoint[];
@@ -13,6 +14,7 @@ interface Props {
 export function EquityChart({ data, height = 300 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { dark } = useDarkMode();
+  const { t: text } = useI18n();
 
   useEffect(() => {
     if (!ref.current || data.length === 0) return;
@@ -39,7 +41,7 @@ export function EquityChart({ data, height = 300 }: Props) {
           if (!Array.isArray(params) || !params.length) return "";
           let html = `<b>${params[0].axisValue}</b>`;
           for (const p of params) {
-            const val = p.seriesName === "Drawdown%"
+            const val = p.seriesName === text.metricMaxDrawdown
               ? `${p.value}%`
               : Number(p.value).toLocaleString();
             html += `<br/>${p.marker} ${p.seriesName}: <b>${val}</b>`;
@@ -49,13 +51,13 @@ export function EquityChart({ data, height = 300 }: Props) {
       },
       toolbox: {
         feature: {
-          saveAsImage: { title: "Save" },
-          restore: { title: "Reset" },
+          saveAsImage: { title: text.saveImage },
+          restore: { title: text.reset },
         },
         right: 8, top: 0,
         iconStyle: { borderColor: t.textColor },
       },
-      legend: { data: ["Equity", "Drawdown%"], textStyle: { color: t.textColor, fontSize: 11 }, right: 60, top: 4 },
+      legend: { data: [text.metricFinalValue, text.metricMaxDrawdown], textStyle: { color: t.textColor, fontSize: 11 }, right: 60, top: 4 },
       grid: [
         { left: 8, right: 8, top: 36, height: "56%", containLabel: true },
         { left: 8, right: 8, top: "68%", height: "20%", containLabel: true },
@@ -79,7 +81,7 @@ export function EquityChart({ data, height = 300 }: Props) {
       dataZoom: [{ type: "inside", xAxisIndex: [0, 1] }],
       series: [
         {
-          name: "Equity", type: "line", xAxisIndex: 0, yAxisIndex: 0,
+          name: text.metricFinalValue, type: "line", xAxisIndex: 0, yAxisIndex: 0,
           data: equity, smooth: false, symbol: "none",
           lineStyle: { color: t.infoColor, width: 2 },
           areaStyle: {
@@ -87,13 +89,13 @@ export function EquityChart({ data, height = 300 }: Props) {
           },
         },
         {
-          name: "Drawdown%", type: "line", xAxisIndex: 1, yAxisIndex: 1,
+          name: text.metricMaxDrawdown, type: "line", xAxisIndex: 1, yAxisIndex: 1,
           data: drawdown, smooth: false, symbol: "none",
           lineStyle: { color: t.downColor, width: 1 },
           areaStyle: { color: t.downColor + "25" },
           markLine: {
             silent: true, symbol: "none",
-            data: [{ yAxis: minDD, label: { formatter: `Max DD: ${minDD}%`, position: "insideEndTop", fontSize: 10, color: t.downColor } }],
+            data: [{ yAxis: minDD, label: { formatter: `${text.metricMaxDrawdown}: ${minDD}%`, position: "insideEndTop", fontSize: 10, color: t.downColor } }],
             lineStyle: { color: t.downColor, type: "dashed", width: 1 },
           },
         },
@@ -103,10 +105,10 @@ export function EquityChart({ data, height = 300 }: Props) {
     const ro = new ResizeObserver(() => chart.resize());
     ro.observe(ref.current!);
     return () => { ro.disconnect(); chart.dispose(); };
-  }, [data, dark]);
+  }, [data, dark, text]);
 
   if (data.length === 0) {
-    return <div className="text-muted-foreground text-sm p-4">No equity data</div>;
+    return <div className="text-muted-foreground text-sm p-4">{text.noEquityData}</div>;
   }
   return <div ref={ref} style={{ height }} />;
 }

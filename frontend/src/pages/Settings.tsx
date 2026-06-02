@@ -379,10 +379,10 @@ export function Settings() {
                 className={fieldClass}
               >
                 <option value="">{t.llmReasoningOff}</option>
-                <option value="low">low</option>
-                <option value="medium">medium</option>
-                <option value="high">high</option>
-                <option value="max">max</option>
+                <option value="low">低</option>
+                <option value="medium">中</option>
+                <option value="high">高</option>
+                <option value="max">最大</option>
               </select>
             </label>
 

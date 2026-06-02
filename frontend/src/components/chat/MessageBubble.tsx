@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import { formatTimestamp } from "@/lib/formatters";
+import { useI18n } from "@/lib/i18n";
 import type { AgentMessage } from "@/types/agent";
 import { AgentAvatar } from "./AgentAvatar";
 import { RunCompleteCard } from "./RunCompleteCard";
@@ -13,6 +14,7 @@ const rehypePlugins = [rehypeHighlight];
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
+  const { t } = useI18n();
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
@@ -23,7 +25,7 @@ function CopyButton({ text }: { text: string }) {
     <button
       onClick={handleCopy}
       className="absolute top-2 right-2 p-1.5 rounded-md bg-muted/80 hover:bg-muted text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-      title={copied ? "Copied" : "Copy"}
+      title={copied ? t.copied : t.copy}
     >
       {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
     </button>
@@ -33,12 +35,12 @@ function CopyButton({ text }: { text: string }) {
 function getRetryHint(content: string): string {
   const lower = content.toLowerCase();
   if (lower.includes("timeout") || lower.includes("timed out")) {
-    return "Execution timed out. Try simplifying the strategy or reducing the number of assets.";
+    return "执行超时。请尝试简化策略或减少资产数量。";
   }
   if (lower.includes("api") || lower.includes("rate limit") || lower.includes("429") || lower.includes("500") || lower.includes("502") || lower.includes("503")) {
-    return "API call failed. Please retry later.";
+    return "API 调用失败，请稍后重试。";
   }
-  return "Execution failed. Click to retry.";
+  return "执行失败。点击重试。";
 }
 
 interface Props {

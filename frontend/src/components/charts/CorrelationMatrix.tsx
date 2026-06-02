@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { echarts } from "@/lib/echarts";
 import { getChartTheme } from "@/lib/chart-theme";
+import { useI18n } from "@/lib/i18n";
 
 interface Props {
   labels: string[];
@@ -10,6 +11,7 @@ interface Props {
 
 export function CorrelationMatrix({ labels, matrix, height = 500 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const { t: text } = useI18n();
 
   useEffect(() => {
     if (!ref.current || labels.length === 0 || matrix.length === 0) return;
@@ -39,7 +41,7 @@ export function CorrelationMatrix({ labels, matrix, height = 500 }: Props) {
         formatter: (params: unknown) => {
           const p = params as { data: [number, number, number] };
           const [x, y, v] = p.data;
-          return `<b>${labels[x]}</b> vs <b>${labels[y]}</b><br/>r = <b>${v.toFixed(4)}</b>`;
+          return `<b>${labels[x]}</b> ${text.versus} <b>${labels[y]}</b><br/>r = <b>${v.toFixed(4)}</b>`;
         },
       },
       grid: { left: "3%", right: "8%", top: "8%", bottom: "12%", containLabel: true },
@@ -77,7 +79,7 @@ export function CorrelationMatrix({ labels, matrix, height = 500 }: Props) {
       },
       series: [
         {
-          name: "Correlation",
+          name: text.correlationSeries,
           type: "heatmap",
           data,
           label: {
@@ -99,10 +101,10 @@ export function CorrelationMatrix({ labels, matrix, height = 500 }: Props) {
     const ro = new ResizeObserver(() => chart.resize());
     ro.observe(ref.current!);
     return () => { ro.disconnect(); chart.dispose(); };
-  }, [labels, matrix]);
+  }, [labels, matrix, text]);
 
   if (labels.length === 0) {
-    return <div className="text-muted-foreground text-sm p-4">No correlation data</div>;
+    return <div className="text-muted-foreground text-sm p-4">{text.noCorrelationData}</div>;
   }
   return <div ref={ref} style={{ height }} />;
 }

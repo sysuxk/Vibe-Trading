@@ -11,13 +11,12 @@ import { ConnectionBanner } from "@/components/layout/ConnectionBanner";
 // Bump on each release; one place keeps the footer in sync with package.json.
 const APP_VERSION = "v0.1.8";
 
-// NAV entries: `key` looks up label in i18n; `label` overrides (used for "Alpha Zoo").
 const NAV = [
-  { to: "/", icon: BarChart3, key: "home" as const, label: null },
-  { to: "/agent", icon: Bot, key: "agent" as const, label: null },
-  { to: "/alpha-zoo", icon: Layers, key: "alphaZoo" as const, label: "Alpha Zoo" },
-  { to: "/settings", icon: Settings, key: "settings" as const, label: null },
-  { to: "/correlation", icon: BarChart3, key: "correlation" as const, label: null },
+  { to: "/", icon: BarChart3, key: "home" as const },
+  { to: "/agent", icon: Bot, key: "agent" as const },
+  { to: "/alpha-zoo", icon: Layers, key: "alphaZoo" as const },
+  { to: "/settings", icon: Settings, key: "settings" as const },
+  { to: "/correlation", icon: BarChart3, key: "correlation" as const },
 ];
 
 export function Layout() {
@@ -87,8 +86,8 @@ export function Layout() {
 
         {/* Nav */}
         <nav className={cn("space-y-0.5", collapsed ? "p-1" : "p-2")}>
-          {NAV.map(({ to, icon: Icon, key, label }) => {
-            const text = label ?? t[key];
+          {NAV.map(({ to, icon: Icon, key }) => {
+            const text = t[key];
             return (
               <Link
                 key={to}
@@ -181,7 +180,7 @@ export function Layout() {
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setRenameTarget(s.session_id); setRenameValue(s.title || ""); }}
                           className="p-1 text-muted-foreground hover:text-foreground rounded"
-                          title="Rename"
+                          title={t.rename}
                         >
                           <Pencil className="h-3 w-3" />
                         </button>
@@ -211,7 +210,7 @@ export function Layout() {
               <button onClick={toggle} className="p-1.5 text-muted-foreground hover:text-foreground rounded transition-colors" title={dark ? t.lightMode : t.darkMode}>
                 {dark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
               </button>
-              <button onClick={() => setCollapsed(false)} className="p-1.5 text-muted-foreground hover:text-foreground rounded transition-colors" title="Expand">
+              <button onClick={() => setCollapsed(false)} className="p-1.5 text-muted-foreground hover:text-foreground rounded transition-colors" title="展开">
                 <ChevronsRight className="h-3.5 w-3.5" />
               </button>
             </>
@@ -229,7 +228,7 @@ export function Layout() {
                   <button
                     onClick={() => setCollapsed(true)}
                     className="p-1 text-muted-foreground hover:text-foreground rounded transition-colors"
-                    title="Collapse"
+                    title="收起"
                   >
                     <ChevronsLeft className="h-3.5 w-3.5" />
                   </button>
