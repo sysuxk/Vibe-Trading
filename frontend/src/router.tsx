@@ -36,19 +36,22 @@ function wrap(Component: ComponentType) {
   );
 }
 
-export const router = createBrowserRouter([
-  {
-    element: <Layout />,
-    children: [
-      { path: "/", element: wrap(Home) },
-      { path: "/agent", element: wrap(Agent) },
-      { path: "/settings", element: wrap(Settings) },
-      { path: "/runs/:runId", element: wrap(RunDetail) },
-      { path: "/compare", element: wrap(Compare) },
-      { path: "/correlation", element: wrap(Correlation) },
-      { path: "/alpha-zoo", element: wrap(AlphaZoo) },
-      { path: "/alpha-zoo/bench", element: wrap(AlphaZoo) },
-      { path: "/alpha-zoo/:alphaId", element: wrap(AlphaZoo) },
-    ],
-  },
-]);
+export const router = createBrowserRouter(
+  [
+    {
+      element: <Layout />,
+      children: [
+        { path: "/", element: wrap(Home) },
+        { path: "/agent", element: wrap(Agent) },
+        { path: "/settings", element: wrap(Settings) },
+        { path: "/runs/:runId", element: wrap(RunDetail) },
+        { path: "/compare", element: wrap(Compare) },
+        { path: "/correlation", element: wrap(Correlation) },
+        { path: "/alpha-zoo", element: wrap(AlphaZoo) },
+        { path: "/alpha-zoo/bench", element: wrap(AlphaZoo) },
+        { path: "/alpha-zoo/:alphaId", element: wrap(AlphaZoo) },
+      ],
+    },
+  ],
+  { basename: import.meta.env.BASE_URL },
+);
