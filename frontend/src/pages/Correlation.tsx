@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BarChart3 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { CorrelationMatrix } from "@/components/charts/CorrelationMatrix";
+import { apiUrl } from "@/lib/api";
 
 const WINDOWS = [30, 60, 90, 180, 365] as const;
 
@@ -120,8 +121,7 @@ export function Correlation() {
 
 // Minimal request helper (avoids importing the full api client which may have path issues)
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const BASE = "";
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(apiUrl(path), {
     headers: { "Content-Type": "application/json", ...options?.headers },
     ...options,
   });

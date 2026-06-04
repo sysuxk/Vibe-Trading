@@ -410,6 +410,29 @@ cd frontend && npm run build && cd ..
 vibe-trading serve --port 8899     # FastAPI serves dist/ as static files
 ```
 
+**GitHub Pages frontend + remote backend:**
+
+The React frontend can be published with the included GitHub Pages workflow. For the `sysuxk/Vibe-Trading` repository, the frontend URL is:
+
+```text
+https://sysuxk.github.io/Vibe-Trading/
+```
+
+GitHub Pages only serves static files; it cannot run the FastAPI backend. To make the deployed UI fully functional, deploy the backend separately and set this GitHub repository variable before running the Pages workflow:
+
+```text
+VITE_API_URL=https://<your-backend-host>
+```
+
+The remote backend must be started with a strong API key and must allow the GitHub Pages origin:
+
+```env
+API_AUTH_KEY=<strong-random-key>
+CORS_ORIGINS=https://sysuxk.github.io
+```
+
+After opening the Pages URL, enter the same API key in **Settings** so browser requests and EventSource streams can authenticate.
+
 </details>
 
 ### Path C: MCP plugin

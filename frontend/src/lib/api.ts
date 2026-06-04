@@ -1,6 +1,10 @@
 import { authHeaders, withAuthQuery } from "@/lib/apiAuth";
 
-const BASE = "";
+const API_BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+
+export function apiUrl(path: string): string {
+  return `${API_BASE}${path}`;
+}
 
 export class ApiError extends Error {
   status: number;
@@ -39,7 +43,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
       mergedHeaders[key] = value;
     });
   }
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(apiUrl(path), {
     ...rest,
     headers: mergedHeaders,
   });
@@ -59,7 +63,7 @@ export interface UploadResult {
 async function uploadFile(file: File): Promise<UploadResult> {
   const form = new FormData();
   form.append("file", file);
-  const res = await fetch(`${BASE}/upload`, { method: "POST", headers: authHeaders(), body: form });
+  const res = await fetch(apiUrl("/upload"), { method: "POST", headers: authHeaders(), body: form });
   if (!res.ok) {
     throw await errorFromResponse(res);
   }
@@ -79,7 +83,7 @@ export const api = {
   sendMessage: (sid: string, content: string) => request<{ message_id: string; attempt_id: string }>(`/sessions/${sid}/messages`, { method: "POST", body: JSON.stringify({ content }) }),
   cancelSession: (sid: string) => request<{ status: string }>(`/sessions/${sid}/cancel`, { method: "POST" }),
   getSessionMessages: (sid: string) => request<MessageItem[]>(`/sessions/${sid}/messages`),
-  sseUrl: (sid: string) => withAuthQuery(`${BASE}/sessions/${sid}/events`),
+  sseUrl: (sid: string) => withAuthQuery(apiUrl(`/sessions/${sid}/events`)),
 
   // Swarm API
   listSwarmPresets: () => request<SwarmPreset[]>("/swarm/presets"),
@@ -90,7 +94,7 @@ export const api = {
     }),
   listSwarmRuns: () => request<SwarmRunSummary[]>("/swarm/runs"),
   getSwarmRun: (id: string) => request<Record<string, unknown>>(`/swarm/runs/${id}`),
-  swarmSseUrl: (id: string) => withAuthQuery(`${BASE}/swarm/runs/${id}/events`),
+  swarmSseUrl: (id: string) => withAuthQuery(apiUrl(`/swarm/runs/${id}/events`)),
   cancelSwarmRun: (id: string) =>
     request<{ status: string }>(`/swarm/runs/${id}/cancel`, { method: "POST" }),
   getLLMSettings: () => request<LLMSettings>("/settings/llm"),
@@ -124,7 +128,7 @@ export const api = {
       body: JSON.stringify(body),
     }),
   alphaBenchStreamUrl: (jobId: string) =>
-    withAuthQuery(`${BASE}/alpha/bench/${encodeURIComponent(jobId)}/stream`),
+    withAuthQuery(apiUrl(`/alpha/bench/${encodeURIComponent(jobId)}/stream`)),
 };
 
 // --- Swarm types ---
