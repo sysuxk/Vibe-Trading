@@ -15,7 +15,7 @@ const PROXY_PATHS = [
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const apiTarget = env.VITE_API_URL || "http://localhost:8899";
-  const base = mode === "production" ? "/Vibe-Trading/" : "/";
+  const base = env.VITE_BASE_PATH || "/";
   const apiProxy = { target: apiTarget, changeOrigin: true };
   const apiProxyWithHtmlFallback = {
     ...apiProxy,
