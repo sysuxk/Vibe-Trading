@@ -433,6 +433,18 @@ CORS_ORIGINS=https://sysuxk.github.io
 
 After opening the Pages URL, enter the same API key in **Settings** so browser requests and EventSource streams can authenticate.
 
+A Render blueprint is included in `render.yaml` for the backend. To deploy it:
+
+1. Push this repository to GitHub.
+2. In Render, choose **New → Blueprint** and select the GitHub repository.
+3. Fill the secret values Render asks for:
+   - `OPENAI_API_KEY`: your Volcengine Ark API key.
+   - `API_AUTH_KEY`: a strong random password/token for the Web UI.
+4. Deploy the `vibe-trading-backend` service.
+5. Copy the Render service URL, for example `https://vibe-trading-backend.onrender.com`.
+6. In GitHub repository settings, add repository variable `VITE_API_URL` with that Render URL.
+7. Re-run the **Deploy frontend to GitHub Pages** workflow.
+
 </details>
 
 ### Path C: MCP plugin

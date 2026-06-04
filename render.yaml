@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: vibe-trading-backend
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: LANGCHAIN_PROVIDER
+        value: openai
+      - key: LANGCHAIN_MODEL_NAME
+        value: ep-20260604145416-8g4hz
+      - key: OPENAI_BASE_URL
+        value: https://ark.cn-beijing.volces.com/api/v3
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: API_AUTH_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://sysuxk.github.io
+      - key: LANGCHAIN_TEMPERATURE
+        value: "0.0"
+      - key: TIMEOUT_SECONDS
+        value: "120"
+      - key: MAX_RETRIES
+        value: "2"
+      - key: ENABLE_SESSION_RUNTIME
+        value: "true"
